@@ -1,0 +1,17 @@
+name: release-dark-studio-pro
+on:
+  push:
+    tags: ['dark-studio-pro-v*']
+permissions: { contents: write }
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Créer la release
+        env: { GH_TOKEN: "${{ github.token }}", TAG: "${{ github.ref_name }}" }
+        run: |
+          gh release create "$TAG" gallery/dark-studio-pro.html \
+            --target "$GITHUB_SHA" --title "Dark Studio Pro ${TAG#dark-studio-pro-}" \
+            --notes-file gallery/RELEASE_NOTES.md \
+            || gh release upload "$TAG" gallery/dark-studio-pro.html --clobber
