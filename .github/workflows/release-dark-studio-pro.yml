@@ -2,6 +2,9 @@ name: release-dark-studio-pro
 on:
   push:
     tags: ['dark-studio-pro-v*']
+  workflow_dispatch:
+    inputs:
+      tag: { description: 'Tag de la release', required: true, default: 'dark-studio-pro-v1.0.0' }
 permissions: { contents: write }
 jobs:
   release:
@@ -9,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Créer la release
-        env: { GH_TOKEN: "${{ github.token }}", TAG: "${{ github.ref_name }}" }
+        env: { GH_TOKEN: "${{ github.token }}", TAG: "${{ inputs.tag || github.ref_name }}" }
         run: |
           gh release create "$TAG" gallery/dark-studio-pro.html \
             --target "$GITHUB_SHA" --title "Dark Studio Pro ${TAG#dark-studio-pro-}" \
